@@ -7,18 +7,19 @@ import java.awt.event.ActionListener;
 
 public class GUI extends JFrame implements ActionListener {
     JFrame frame;
-    operatorButton plus,minus,multiply,divide,equals;
-    NumberButton one,two,three,four,five,six,seven,eight,nine,zero;
+    operatorButton plus, minus, multiply, divide, equals;
+    NumberButton one, two, three, four, five, six, seven, eight, nine, zero;
     JTextArea output;
     JPanel digitPanel;
-    char operator,previousOperator;
-    boolean expectingNextOperand,shouldRemoveChar,lastOperandHasValue,firstOperation;
-    int currentOperand,lastOperand;
-    public GUI(){
+    char operator, previousOperator;
+    boolean expectingNextOperand, shouldRemoveChar, lastOperandHasValue, firstOperation;
+    int currentOperand, lastOperand;
+
+    public GUI() {
         frame = new JFrame("Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 300);
-        firstOperation =true;
+        firstOperation = true;
         digitPanel = new JPanel();
 
         output = new JTextArea();
@@ -55,7 +56,6 @@ public class GUI extends JFrame implements ActionListener {
         divide.addActionListener(this);
         equals.addActionListener(this);
 
-
         digitPanel.add(one);
         digitPanel.add(two);
         digitPanel.add(three);
@@ -72,84 +72,74 @@ public class GUI extends JFrame implements ActionListener {
         digitPanel.add(divide);
         digitPanel.add(equals);
 
-        digitPanel.setLayout( new GridLayout(5,3));
+        digitPanel.setLayout(new GridLayout(5, 3));
         output.setEditable(false);
 
-
-        frame.add(BorderLayout.NORTH,output);
-        frame.add(BorderLayout.SOUTH,digitPanel);
-
+        frame.add(BorderLayout.NORTH, output);
+        frame.add(BorderLayout.SOUTH, digitPanel);
 
         frame.setVisible(true);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource()instanceof NumberButton){
-            if(expectingNextOperand){
+        if (e.getSource() instanceof NumberButton) {
+            if (expectingNextOperand) {
                 lastOperand = currentOperand;
                 lastOperandHasValue = true;
-                if (shouldRemoveChar){
+                if (shouldRemoveChar) {
                     resetOutput();
-                    shouldRemoveChar=false;
+                    shouldRemoveChar = false;
 
                 }
                 output.append(String.valueOf(((NumberButton) e.getSource()).getNumber()));
-            }
-            else {
+            } else {
                 output.append(String.valueOf(((NumberButton) e.getSource()).getNumber()));
             }
 
-        } else if (e.getSource()instanceof operatorButton){
-            if(e.getSource()==equals){
+        } else if (e.getSource() instanceof operatorButton) {
+            if (e.getSource() == equals) {
                 currentOperand = Integer.parseInt(output.getText());
                 resetOutput();
-                output.append(String.valueOf(calculate(lastOperand,currentOperand,operator)));
-                currentOperand = calculate(lastOperand,currentOperand,operator);
+                output.append(String.valueOf(calculate(lastOperand, currentOperand, operator)));
+                currentOperand = calculate(lastOperand, currentOperand, operator);
                 firstOperation = true;
 
-            }
-            else {
+            } else {
                 currentOperand = Integer.parseInt(output.getText());
-                if(!firstOperation){
-                previousOperator = operator;
+                if (!firstOperation) {
+                    previousOperator = operator;
                 }
                 operator = ((operatorButton) e.getSource()).getOperator();
 
-
-                if(lastOperandHasValue&& !firstOperation){
-                    output.setText(String.valueOf(calculate(lastOperand,currentOperand,previousOperator)));
-                    currentOperand = calculate(lastOperand,currentOperand,previousOperator);
+                if (lastOperandHasValue && !firstOperation) {
+                    output.setText(String.valueOf(calculate(lastOperand, currentOperand, previousOperator)));
+                    currentOperand = calculate(lastOperand, currentOperand, previousOperator);
                 }
-                System.out.println(operator);
                 output.append(String.valueOf(operator));
-                expectingNextOperand=true;
+                expectingNextOperand = true;
                 shouldRemoveChar = true;
                 firstOperation = false;
-
 
             }
         }
 
-
-
     }
-    public void resetOutput(){
+
+    public void resetOutput() {
         output.setText(null);
     }
-    public int calculate(int firstOperand,int secondOperand, char operator){
-        int ans=0;
-        switch (operator) {
-            case '+' -> ans = firstOperand+secondOperand;
-            case '-' -> ans = firstOperand-secondOperand;
-            case '*' -> ans = firstOperand*secondOperand;
-            case '/' -> ans = firstOperand/secondOperand;
 
+    public int calculate(int firstOperand, int secondOperand, char operator) {
+        int ans = 0;
+        switch (operator) {
+            case '+' -> ans = firstOperand + secondOperand;
+            case '-' -> ans = firstOperand - secondOperand;
+            case '*' -> ans = firstOperand * secondOperand;
+            case '/' -> ans = firstOperand / secondOperand;
 
         }
-        System.out.println(firstOperand);
-        System.out.println(operator);
-        System.out.println(secondOperand);
-        System.out.println("ans ="+ans);
+
         return ans;
     }
 
